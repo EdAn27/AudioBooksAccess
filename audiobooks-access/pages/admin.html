@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Administrador</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+
+  <style>
+    body {
+      background: #f4f6fb;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+    }
+
+    .header-admin {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .header-admin img {
+      width: 60px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    ul {
+      padding-left: 0;
+      list-style: none;
+    }
+
+    .libro-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f1f1f1;
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .btn-eliminar {
+      background: red;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .acciones {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="header-admin">
+    <img src="../assets/logo.png">
+    <h2>AudioBooks</h2>
+    <p>Access - Administrador</p>
+  </div>
+
+  <div class="grid">
+
+    <!-- SUBIR -->
+    <div class="card">
+
+      <h3>Subir Libro</h3>
+
+      <label>Nombre</label>
+      <input type="text" id="nombre">
+
+      <label>Categoría</label>
+      <select id="categoria">
+        <option value="historia">Historia</option>
+        <option value="matematica">Matemática</option>
+        <option value="ciencia">Ciencia</option>
+      </select>
+
+      <label>Link RAW</label>
+      <input type="text" id="url">
+
+      <button class="btn" onclick="subirLibro()">⬆ Subir libro</button>
+
+    </div>
+
+    <!-- LISTA -->
+    <div class="card">
+
+      <h3>Libros subidos</h3>
+
+      <ul id="listaLibros"></ul>
+
+    </div>
+
+  </div>
+
+  
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+/* FIREBASE */
+const firebaseConfig = {
+  apiKey: "AIzaSyCwedwdUycIXM1M2_Oyyg8owbeA84VjvE8",
+  authDomain: "audiobooks-access.firebaseapp.com",
+  projectId: "audiobooks-access"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+/* SUBIR */
+async function subirLibro() {
+
+  try {
+
+    const nombre = document.getElementById("nombre").value.trim();
+    const categoria = document.getElementById("categoria").value;
+    const url = document.getElementById("url").value.trim();
+
+    if (!nombre || !url) {
+      alert("Completa los campos");
+      return;
+    }
+
+    await addDoc(collection(db, "libros"), {
+      nombre,
+      categoria,
+      url
+    });
+
+    alert("Libro subido ✅");
+
+    document.getElementById("nombre").value = "";
+    document.getElementById("url").value = "";
+
+    cargarLibros();
+
+  } catch (error) {
+
+    console.error("ERROR:", error);
+    alert("Error al subir ❌");
+
+  }
+}
+
+/* LISTAR */
+async function cargarLibros() {
+
+  const lista = document.getElementById("listaLibros");
+  lista.innerHTML = "";
+
+  const querySnapshot = await getDocs(collection(db, "libros"));
+
+  querySnapshot.forEach((item) => {
+
+    const libro = item.data();
+    const id = item.id;
+
+    let li = document.createElement("li");
+
+    li.innerHTML = `
+      <div class="libro-item">
+        ${libro.nombre}
+        <button class="btn-eliminar" onclick="eliminarLibro('${id}')">X</button>
+      </div>
+    `;
+
+    lista.appendChild(li);
+  });
+}
+
+/* ELIMINAR */
+window.eliminarLibro = async function(id) {
+
+  if (!confirm("¿Eliminar libro?")) return;
+
+  await deleteDoc(doc(db, "libros", id));
+
+  cargarLibros();
+}
+
+/* HACER GLOBAL */
+window.subirLibro = subirLibro;
+
+/* INICIO */
+cargarLibros();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,146 @@
+/* CONTENEDOR GENERAL */
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* TÍTULO */
+.main h2 {
+  margin-bottom: 20px;
+}
+
+/* ESCUCHANDO */
+.escuchando-box {
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(10px);
+
+  border: 2px solid #c4b5fd;
+  border-radius: 18px;
+
+  padding: 30px;
+  width: 450px;
+
+  text-align: center;
+  margin-bottom: 25px;
+
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+/* MICRO */
+.mic-circle {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 15px auto;
+
+  box-shadow: 0 6px 20px rgba(124,58,237,0.4);
+}
+
+/* ICONO MICRO */
+.mic-circle img {
+  width: 30px;
+  filter: brightness(0) invert(1);
+}
+
+/* ONDAS */
+.ondas {
+  color: #7c3aed;
+  font-size: 18px;
+  margin: 5px 0;
+}
+
+/* TEXTO */
+.escuchando-box h3 {
+  margin-top: 10px;
+  font-size: 17px;
+}
+
+.escuchando-box p {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* COMANDO */
+.comando-box {
+  background: #f3eaff;
+  border: 1px solid #c4b5fd;
+
+  padding: 12px 15px;
+  border-radius: 12px;
+
+  width: 450px;
+  margin-bottom: 20px;
+
+  font-size: 14px;
+}
+
+/* RESULTADOS (AJUSTADO) */
+.resultados {
+  width: 450px;
+  background: white;
+  border: 1px solid #ddd;
+
+  padding: 15px;
+  border-radius: 12px;
+
+  list-style: none; /* ❌ quita los puntos */
+  padding-left: 0;
+
+  margin-bottom: 20px;
+
+  text-align: left; /* 🔥 alineado a la izquierda */
+}
+
+/* ITEMS */
+.resultados li {
+  margin: 6px 0;
+  padding: 0;
+
+  display: block;
+}
+
+/* GUIONES (-) */
+.resultados li::before {
+  content: "- ";
+  color: #6a0dad;
+  font-weight: bold;
+}
+
+/* ITEMS (SIN TARJETAS) */
+.resultados li {
+  margin: 6px 0;
+  padding: 0;
+  background: none;
+  border: none;
+
+  transition: 0.2s;
+}
+
+/* HOVER SUAVE */
+.resultados li:hover {
+  color: #6a0dad;
+}
+
+/* BOTÓN */
+.acciones {
+  width: 450px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-regresar {
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+
+  background: white;
+  cursor: pointer;
+}
