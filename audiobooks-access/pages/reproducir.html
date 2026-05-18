@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reproducción</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/reproducir.css">
+</head>
+
+<body>
+
+<header class="header">
+
+  <div class="logo">
+    <img src="../assets/logo.png">
+    <div class="logo-text">
+      <span>AudioBooks</span>
+      <span>Access</span>
+    </div>
+  </div>
+
+  <div class="modo">
+    🎙 Modo de voz activo
+  </div>
+
+</header>
+
+<main class="main">
+
+  <h2>Reproducción</h2>
+
+  <div class="comando-box">
+    Di: pausar, continuar o regresar
+  </div>
+
+  <div class="card-libro">
+    <h3 id="tituloLibro"></h3>
+
+    <div class="controles">
+      <button onclick="reproducir()">▶ Reproducir</button>
+      <button onclick="pausar()">⏸ Pausar</button>
+    </div>
+  </div>
+
+  <div class="subtitulos" id="subtitulos">
+    Cargando libro...
+  </div>
+
+  <div class="acciones">
+  <span>🔊 Reproducción de Libro</span>
+    <button onclick="window.location.href='buscar.html'">⬅ Regresar</button>
+  </div>
+
+</main>
+
+<script>
+
+/* 📥 LIBRO */
+let libro = JSON.parse(localStorage.getItem("libroSeleccionado"));
+
+if (!libro) {
+  alert("No hay libro seleccionado");
+}
+
+document.getElementById("tituloLibro").innerText = libro.nombre;
+
+/* VARIABLES */
+let partes = [];
+let index = 0;
+let hablando = false;
+
+/* 🔥 CARGAR TEXTO */
+async function cargarTexto() {
+
+  try {
+
+    const response = await fetch(libro.url);
+
+    if (!response.ok) throw new Error("No carga");
+
+    const texto = await response.text();
+
+    partes = texto
+      .split(".")
+      .map(p => p.trim())
+      .filter(p => p.length > 0);
+
+    iniciarLectura();
+
+  } catch (error) {
+
+    console.error(error);
+    document.getElementById("subtitulos").innerText =
+      "❌ Error al cargar el texto";
+
+  }
+}
+
+/* ▶ INICIO AUTOMÁTICO */
+function iniciarLectura() {
+
+  hablando = true;
+  index = 0;
+
+  leer();
+}
+
+/* ▶ REPRODUCIR */
+function reproducir() {
+  hablando = true;
+  leer();
+}
+
+/* ⏸ PAUSAR */
+function pausar() {
+  hablando = false;
+  window.speechSynthesis.cancel();
+}
+
+/* 🔊 LEER */
+function leer() {
+
+  if (!hablando || index >= partes.length) return;
+
+  let frase = partes[index];
+
+  document.getElementById("subtitulos").innerText = frase;
+
+  let speech = new SpeechSynthesisUtterance(frase);
+  speech.lang = "es-ES";
+
+  speech.onend = () => {
+    index++;
+    leer();
+  };
+
+  window.speechSynthesis.speak(speech); // 🔥 SIN CANCEL
+}
+
+/* 🎤 VOZ CONTROL */
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+if (SpeechRecognition) {
+
+  const reconocimiento = new SpeechRecognition();
+
+  reconocimiento.lang = "es-ES";
+  reconocimiento.continuous = true;
+
+  function iniciarMic() {
+    try {
+      reconocimiento.start();
+    } catch {}
+  }
+
+  iniciarMic();
+
+  reconocimiento.onresult = function(event) {
+
+    let comando = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
+
+    console.log("🎤", comando);
+
+    if (comando.includes("pausar") || comando.includes("pausa")) {
+      pausar();
+    }
+
+    else if (comando.includes("continuar") || comando.includes("seguir")) {
+      reproducir();
+    }
+
+    else if (comando.includes("regresar") || comando.includes("volver")) {
+
+      pausar();
+
+      window.location.href = "buscar.html";
+    }
+  };
+
+  reconocimiento.onend = () => iniciarMic();
+  reconocimiento.onerror = () => iniciarMic();
+
+}
+
+/* 🚀 INICIAR */
+cargarTexto();
+
+</script>
+
+</body>
+</html>
