@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Configuración</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/config.css">
+</head>
+
+<body>
+
+<header class="header">
+  <div class="logo">
+    <img src="../assets/logo.png">
+    <div class="logo-text">
+      <span>AudioBooks</span>
+      <span>Access</span>
+    </div>
+  </div>
+  <div class="modo">🎙 Modo de voz activo</div>
+</header>
+
+<main class="main">
+
+  <h2>⚙️ Configuración de Accesibilidad</h2>
+
+  <div class="info-box" id="mensaje-voz" style="text-align: center; font-weight: bold; min-height: 45px;">
+    Modo escucha activo. Di "Guardar" o configura diciendo comandos (Ej: "Letra azul", "Voz de hombre")
+  </div>
+
+  <div class="config-box">
+    <div class="fila">
+      <label>Idioma de Lectura</label>
+      <select id="idioma">
+        <option value="es-ES">Español</option>
+        <option value="en-US">Inglés</option>
+      </select>
+    </div>
+
+    <div class="fila">
+      <label>Tamaño de texto</label>
+      <select id="tamano">
+        <option value="18px">Pequeño</option>
+        <option value="22px">Mediano</option>
+        <option value="28px">Grande</option>
+      </select>
+    </div>
+
+    <div class="fila">
+      <label>Color de subtítulos</label>
+      <select id="color">
+        <option value="#333333">Gris Oscuro</option>
+        <option value="#000000">Negro</option>
+        <option value="#4B0082">Índigo</option>
+        <option value="#0000FF">Azul</option>
+        <option value="#006400">Verde</option>
+      </select>
+    </div>
+
+    <div class="fila">
+      <label>Tipo de Voz</label>
+      <select id="tipoVoz">
+        <option value="femenina">Femenina</option>
+        <option value="masculina">Masculina</option>
+      </select>
+    </div>
+
+    <button class="btn-guardar" style="margin-top: 10px;" onclick="guardarConfig()">Guardar Ajustes</button>
+  </div>
+
+  <div class="acciones">
+    <button class="btn-regresar" onclick="window.location.href='../index.html'">⬅ Regresar</button>
+  </div>
+
+</main>
+
+<script>
+// CARGAR VALORES GUARDADOS PREVIAMENTE
+function cargarConfig() {
+  const config = JSON.parse(localStorage.getItem("configAudioBooks"));
+  if (!config) return;
+
+  if (config.idioma) document.getElementById("idioma").value = config.idioma;
+  if (config.tamano) document.getElementById("tamano").value = config.tamano;
+  if (config.color) document.getElementById("color").value = config.color;
+  if (config.tipoVoz) document.getElementById("tipoVoz").value = config.tipoVoz;
+}
+cargarConfig();
+
+// GUARDAR EN LOCALSTORAGE Y RETROALIMENTACIÓN POR AUDIO
+window.guardarConfig = function() {
+  const config = {
+    idioma: document.getElementById("idioma").value,
+    tamano: document.getElementById("tamano").value,
+    color: document.getElementById("color").value,
+    tipoVoz: document.getElementById("tipoVoz").value
+  };
+
+  localStorage.setItem("configAudioBooks", JSON.stringify(config));
+  
+  let speech = new SpeechSynthesisUtterance("Configuración guardada correctamente");
+  speech.lang = "es-ES";
+  window.speechSynthesis.speak(speech);
+  
+  document.getElementById("mensaje-voz").innerText = "¡Guardado con éxito! ✅";
+}
+
+// CONTROL POR RECONOCIMIENTO DE VOZ PROPIO DE LA PANTALLA
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (SpeechRecognition) {
+  const reconocimiento = new SpeechRecognition();
+  reconocimiento.lang = "es-ES";
+  reconocimiento.continuous = true;
+
+  function iniciarMic() { try { reconocimiento.start(); } catch {} }
+  iniciarMic();
+
+  reconocimiento.onresult = function(event) {
+    let comando = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
+    console.log("Comando recibido en Configuración:", comando);
+    document.getElementById("mensaje-voz").innerText = "Escuché: " + comando;
+
+    // Procesar comandos de Tipo de Voz
+    if (comando.includes("femenina") || comando.includes("mujer") || comando.includes("chica")) {
+      document.getElementById("tipoVoz").value = "femenina";
+    } else if (comando.includes("masculina") || comando.includes("hombre") || comando.includes("chico")) {
+      document.getElementById("tipoVoz").value = "masculina";
+    }
+    
+    // Procesar comandos de Idioma
+    if (comando.includes("inglés") || comando.includes("ingles")) {
+      document.getElementById("idioma").value = "en-US";
+    } else if (comando.includes("español") || comando.includes("castellano")) {
+      document.getElementById("idioma").value = "es-ES";
+    }
+
+    // Procesar comandos de Tamaño de Fuente
+    if (comando.includes("grande") || comando.includes("alto")) {
+      document.getElementById("tamano").value = "28px";
+    } else if (comando.includes("mediano") || comando.includes("normal")) {
+      document.getElementById("tamano").value = "22px";
+    } else if (comando.includes("pequeño") || comando.includes("pequeno") || comando.includes("bajo")) {
+      document.getElementById("tamano").value = "18px";
+    }
+
+    // Procesar comandos de Color
+    if (comando.includes("azul")) document.getElementById("color").value = "#0000FF";
+    else if (comando.includes("verde")) document.getElementById("color").value = "#006400";
+    else if (comando.includes("negro")) document.getElementById("color").value = "#000000";
+    else if (comando.includes("gris")) document.getElementById("color").value = "#333333";
+    else if (comando.includes("índigo") || comando.includes("indigo")) document.getElementById("color").value = "#4B0082";
+
+    // Guardado o navegación por voz
+    if (comando.includes("guardar") || comando.includes("aceptar")) {
+      guardarConfig();
+    } else if (comando.includes("regresar") || comando.includes("volver")) {
+      window.location.href = '../index.html';
+    }
+  };
+  
+  reconocimiento.onend = () => iniciarMic();
+  reconocimiento.onerror = () => iniciarMic();
+}
+</script>
+
+</body>
+</html>
