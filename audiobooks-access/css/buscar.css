@@ -1,0 +1,160 @@
+/* CONTENEDOR GENERAL */
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* TÍTULO */
+.main h2 {
+  margin-bottom: 20px;
+}
+
+/* ESCUCHANDO */
+.escuchando-box {
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(10px);
+
+  border: 2px solid #c4b5fd;
+  border-radius: 18px;
+
+  padding: 30px;
+  width: 450px;
+
+  text-align: center;
+  margin-bottom: 25px;
+
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+/* MICRO */
+.mic-circle {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 15px auto;
+
+  box-shadow: 0 6px 20px rgba(124,58,237,0.4);
+}
+
+/* ICONO MICRO */
+.mic-circle img {
+  width: 30px;
+  filter: brightness(0) invert(1);
+}
+
+/* ONDAS */
+.ondas {
+  color: #7c3aed;
+  font-size: 18px;
+  margin: 5px 0;
+}
+
+/* TEXTO */
+.escuchando-box h3 {
+  margin-top: 10px;
+  font-size: 17px;
+}
+
+.escuchando-box p {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* COMANDO */
+.comando-box {
+  background: #f3eaff;
+  border: 1px solid #c4b5fd;
+
+  padding: 12px 15px;
+  border-radius: 12px;
+
+  width: 450px;
+  margin-bottom: 20px;
+
+  font-size: 14px;
+}
+
+/* RESULTADOS (AJUSTADO) */
+.resultados {
+  max-height: 110px;  
+  overflow-y: auto;
+
+  padding: 10px 15px;
+  margin-top: 10px;
+
+  list-style: none;
+  text-align: left;
+}
+
+/* ITEMS */
+.resultados li {
+  margin: 6px 0;
+  padding: 0;
+
+  display: block;
+}
+
+/* GUIONES (-) */
+.resultados li::before {
+  content: "- ";
+  color: #6a0dad;
+  font-weight: bold;
+}
+
+/* ITEMS (SIN TARJETAS) */
+.resultados li {
+  margin: 6px 0;
+  padding: 0;
+  background: none;
+  border: none;
+
+  transition: 0.2s;
+}
+
+/* HOVER SUAVE */
+.resultados li:hover {
+  color: #6a0dad;
+}
+
+/* BOTÓN */
+.acciones {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end; 
+  margin-top: 10px;
+}
+
+.btn-regresar {
+  position: fixed;      
+  bottom: 25px;         
+  right: 25px;          
+
+  padding: 12px 20px;
+  border-radius: 15px;
+  border: none;
+
+  background: white;
+  color: #333;
+
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+
+  cursor: pointer;
+  transition: 0.2s;
+
+  z-index: 1000;        
+}
+
+/* HOVER */
+.btn-regresar:hover {
+  background: #7c3aed;
+  color: white;
+  transform: scale(1.05);
+}
