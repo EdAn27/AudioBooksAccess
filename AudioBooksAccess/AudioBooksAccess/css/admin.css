@@ -1,0 +1,85 @@
+/* CONTENEDOR */
+.admin-container {
+  display: flex;
+  height: calc(100vh - 80px);
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 220px;
+  background: #f3f0ff;
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* ITEMS */
+.menu {
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.menu:hover {
+  background: #e0d4ff;
+}
+
+.menu.active {
+  background: #d1c4e9;
+  font-weight: bold;
+}
+
+.logout {
+  margin-top: auto;
+}
+
+/* MAIN */
+.admin-main {
+  flex: 1;
+  display: flex;
+  gap: 20px;
+  padding: 30px;
+}
+
+/* CARDS */
+.card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+
+  padding: 20px;
+  width: 350px;
+}
+
+/* INPUTS */
+.card input,
+.card select {
+  width: 100%;
+  padding: 8px;
+  margin: 8px 0 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* BOTÓN */
+.btn-subir {
+  width: 100%;
+  padding: 12px;
+
+  background: #6a0dad;
+  color: white;
+
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* LISTA */
+.card ul {
+  margin-top: 10px;
+  padding-left: 20px;
+}
+
